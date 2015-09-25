@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletResponse;
 
 /**
  * Builder class to create partial response.
@@ -38,10 +38,8 @@ public class PartialResponseBuilder implements Closeable {
    * @param response
    *          The response where the partial response will be written to. Cannot be
    *          <code>null</code>!
-   * @throws IOException
-   *           if writer of response throws an exception.
    */
-  public PartialResponseBuilder(final HttpServletResponse response) {
+  public PartialResponseBuilder(final ServletResponse response) {
     Objects.requireNonNull(response, "Response cannot be null!");
 
     response.setCharacterEncoding(StandardCharsets.UTF_8.name());

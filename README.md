@@ -1,6 +1,6 @@
 # web-partialresponse
 
-An amazingly JQuery based library that can create partial-responses on the
+An amazingly small, JQuery based library that can create partial-responses on the
 server side and process them on the client side.
 
 With PartialResponse, you can do all DOM manipulations from a Servlet and an

@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.NetworkConnector;
 import org.eclipse.jetty.server.Server;
+import org.everit.jetty.server.ecm.JettyServerConstants;
 import org.everit.osgi.dev.testrunner.TestDuringDevelopment;
 import org.everit.osgi.ecm.annotation.Component;
 import org.everit.osgi.ecm.annotation.Service;
@@ -30,7 +31,6 @@ import org.everit.osgi.ecm.annotation.ServiceRef;
 import org.everit.osgi.ecm.annotation.attribute.StringAttribute;
 import org.everit.osgi.ecm.annotation.attribute.StringAttributes;
 import org.everit.osgi.ecm.extender.ECMExtenderConstants;
-import org.everit.osgi.jetty.server.component.JettyServerConstants;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -216,7 +216,8 @@ public class PartialResponseTest {
    * @param server
    *          The running Jetty server.
    */
-  @ServiceRef(defaultValue = "(service.factoryPid=" + JettyServerConstants.FACTORY_PID + ")")
+  @ServiceRef(
+      defaultValue = "(service.factoryPid=" + JettyServerConstants.SERVICE_FACTORY_PID + ")")
   public void setServer(final Server server) {
     Connector[] connectors = server.getConnectors();
     NetworkConnector connector = (NetworkConnector) connectors[0];

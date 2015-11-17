@@ -100,8 +100,7 @@
       <div class="bs-docs-featurette cookbook">
         <h2 id="usage" class="bs-docs-featurette-title">Usage</h2>
         <h3 id="usage_server_side">Usage on the server side</h3>
-        <pre class="prettyprint lang-java">
-          <code>public void service(ServletRequest request, ServletResponse response) {
+        <pre class="prettyprint">public void service(ServletRequest request, ServletResponse response) {
   // Create a new partial response builder
   PartialResponseBuilder prb = new PartialResponseBuilder(response);
 
@@ -116,12 +115,9 @@
   // PartialResponseBuilder implements Closeable to let the programmer
   // use it within a try block.
   prb.close();
-}
-        </code>
-        </pre>
+}</pre>
         <h3 id="usage_client_side">Usage on the client side</h3>
-        <pre class="prettyprint lang-java">
-          <code>&lt;html&gt;
+        <pre class="prettyprint">&lt;html&gt;
 &lt;head&gt;
   &lt;!-- Include JQuery before partialresponse is included --&gt;
   &lt;script src="jquery.js"&gt;&lt;/script&gt;
@@ -150,9 +146,7 @@
     }
   &lt;/script&gt;
 &lt;/body&gt;
-&lt;/html&gt;
-        </code>
-        </pre>
+&lt;/html&gt;</pre>
       </div>
       <hr class="featurette-divider">
     </div>
@@ -206,6 +200,7 @@
         s.parentNode.insertBefore(ga, s);
       })();
     </script>
+  <script src="http://www.everit.org/js/prettify/run_prettify.js"></script>
 </body>
 
 </html>

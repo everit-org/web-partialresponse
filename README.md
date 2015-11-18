@@ -1,3 +1,3 @@
 # web-partialresponse
 
-Documentation: http://wwww.everit.org/web-partialresponse
+Documentation: http://www.everit.org/web-partialresponse

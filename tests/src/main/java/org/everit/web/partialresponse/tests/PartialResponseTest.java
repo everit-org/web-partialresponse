@@ -55,6 +55,7 @@ import aQute.bnd.annotation.headers.ProvideCapability;
     @StringAttribute(attributeId = "eosgi.testId", defaultValue = "PartialResponseTest"),
     @StringAttribute(attributeId = "eosgi.testEngine", defaultValue = "junit4") })
 @Service
+@TestDuringDevelopment
 public class PartialResponseTest {
 
   /**
@@ -158,17 +159,17 @@ public class PartialResponseTest {
 
   private void doTest(final String linkElementId, final Consumer<HtmlPage> testAction)
       throws IOException {
-    HtmlPage htmlPage = getPageAfterClick(BrowserVersion.INTERNET_EXPLORER_11, linkElementId);
-    testAction.accept(htmlPage);
-
-    htmlPage = getPageAfterClick(BrowserVersion.INTERNET_EXPLORER_8, linkElementId);
-    testAction.accept(htmlPage);
-
-    htmlPage = getPageAfterClick(BrowserVersion.FIREFOX_38, linkElementId);
+    HtmlPage htmlPage = getPageAfterClick(BrowserVersion.FIREFOX_45, linkElementId);
     testAction.accept(htmlPage);
 
     htmlPage = getPageAfterClick(BrowserVersion.CHROME, linkElementId);
     testAction.accept(htmlPage);
+
+    htmlPage = getPageAfterClick(BrowserVersion.INTERNET_EXPLORER, linkElementId);
+    testAction.accept(htmlPage);
+
+    // htmlPage = getPageAfterClick(BrowserVersion.EDGE, linkElementId);
+    // testAction.accept(htmlPage);
   }
 
   private HtmlPage getPageAfterClick(final BrowserVersion browserVersion,
@@ -225,7 +226,6 @@ public class PartialResponseTest {
   }
 
   @Test
-  @TestDuringDevelopment
   public void testAppend1() throws IOException {
     doTest("append_1", (htmlPage) -> {
       ExpectedTextMsgDTO expectedTextMsgDTO = createDefaultExpectedTextMsgDTO()
@@ -235,7 +235,6 @@ public class PartialResponseTest {
   }
 
   @Test
-  @TestDuringDevelopment
   public void testAppend2() throws IOException {
     doTest("append_2", (htmlPage) -> {
       ExpectedTextMsgDTO expectedTextMsgDTO = createDefaultExpectedTextMsgDTO()
@@ -248,6 +247,14 @@ public class PartialResponseTest {
 
   @Test
   @TestDuringDevelopment
+  public void testAppendTableRow() throws IOException {
+    doTest("append_table_row", (htmlPage) -> {
+      DomElement appendedTableRow = htmlPage.getElementById("appended_table_row");
+      Assert.assertNotNull(appendedTableRow);
+    });
+  }
+
+  @Test
   public void testComplex() throws IOException {
     doTest("complex", (htmlPage) -> {
       ExpectedTextMsgDTO expectedTextMsgDTO = createDefaultExpectedTextMsgDTO()
@@ -262,7 +269,6 @@ public class PartialResponseTest {
   }
 
   @Test
-  @TestDuringDevelopment
   public void testPrepend1() throws IOException {
     doTest("prepend_1", (htmlPage) -> {
       ExpectedTextMsgDTO expectedTextMsgDTO = createDefaultExpectedTextMsgDTO()
@@ -272,7 +278,6 @@ public class PartialResponseTest {
   }
 
   @Test
-  @TestDuringDevelopment
   public void testPrepend2() throws IOException {
     doTest("prepend_2", (htmlPage) -> {
       ExpectedTextMsgDTO expectedTextMsgDTO = createDefaultExpectedTextMsgDTO()
@@ -284,7 +289,6 @@ public class PartialResponseTest {
   }
 
   @Test
-  @TestDuringDevelopment
   public void testReplace1() throws IOException {
     doTest("replace_1", (htmlPage) -> {
       ExpectedTextMsgDTO expectedTextMsgDTO = createDefaultExpectedTextMsgDTO()
@@ -294,7 +298,6 @@ public class PartialResponseTest {
   }
 
   @Test
-  @TestDuringDevelopment
   public void testReplace2() throws IOException {
     doTest("replace_2", (htmlPage) -> {
       ExpectedTextMsgDTO expectedTextMsgDTO = createDefaultExpectedTextMsgDTO()
@@ -319,7 +322,6 @@ public class PartialResponseTest {
   }
 
   @Test
-  @TestDuringDevelopment
   public void testReplaceById2() throws IOException {
     doTest("replace_by_id_2", (htmlPage) -> {
       ExpectedTextMsgDTO expectedTextMsgDTO = createDefaultExpectedTextMsgDTO()

@@ -83,7 +83,7 @@ div.border {
           <th>Remark</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="test_table_body">
         <tr>
           <td><a id="resetToDefault" href="javascript:void(0);" onclick="resetToDefault();">Reset
               to default</a></td>
@@ -172,6 +172,10 @@ Partial response test with use partial-append, partial-prepend, partial-replace 
 2. Append "_append" postfix to "default_new_content".
 3. Prepend "prepend_" prefix to "default_new_content_append".
 </pre></td>
+        </tr>
+        <tr>
+          <td><a id="append_table_row" href="javascript:void(0);" onclick="appendTableRow()">Append table row</a></td>
+          <td>Testing inserting a new row. New row with Hello world should appear after last row.</td>
         </tr>
       </tbody>
     </table>
@@ -307,6 +311,20 @@ Partial response test with use partial-append, partial-prepend, partial-replace 
         $.ajax({
           data : {
             action : "complex"
+          },
+          headers : {
+            "x-partialresponse-ajax" : "true"
+          }
+        }).done(function(msg) {
+          everit.partialresponse.process(msg);
+        });
+        return true;
+      }
+
+      function appendTableRow() {
+        $.ajax({
+          data : {
+            action : "append_table_row"
           },
           headers : {
             "x-partialresponse-ajax" : "true"

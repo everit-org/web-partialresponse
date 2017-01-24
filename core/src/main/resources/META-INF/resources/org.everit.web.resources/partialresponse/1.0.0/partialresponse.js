@@ -23,14 +23,14 @@ if (typeof everit.partialresponse === 'undefined' || everit.partialresponse === 
 
   everit.partialresponse.process = function(responseContent) {
     var responseObj = $($.parseHTML(responseContent));
-  
+
     responseObj.children('partial-replace').each(function() {
       var replaceObj = $(this);
       var selector = replaceObj.attr('selector');
       if (typeof selector !== typeof undefined && selector !== false) {
-        $(selector).replaceWith(replaceObj.html());
+        $(selector).replaceWith($.parseHTML(this.innerText));
       } else {
-        $(this).children().each(function() {
+        $($.parseHTML(this.innerText)).each(function() {
           var newContentObj = $(this);
           var elementId = newContentObj.attr('id');
           var newContentOuterHTML = this.outerHTML;
@@ -38,18 +38,17 @@ if (typeof everit.partialresponse === 'undefined' || everit.partialresponse === 
         });
       }
     });
-  
+
     responseObj.children('partial-append').each(function() {
       var appendObj = $(this);
       var selector = appendObj.attr('selector');
-      $(selector).append(appendObj.html());
+      $(selector).append($.parseHTML(this.innerText));
     });
   
     responseObj.children('partial-prepend').each(function() {
       var prependObj = $(this);
       var selector = prependObj.attr('selector');
-      $(selector).prepend(prependObj.html());
+      $(selector).prepend($.parseHTML(this.innerText));
     });
   }
 }
-

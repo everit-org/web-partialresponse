@@ -75,7 +75,7 @@ public class IndexServlet implements Servlet {
 
   private static final String VAR_SUB_DIV_2_MSG = "sub_div_2_msg";
 
-  private Map<String, Consumer<HttpServletResponse>> ajaxActions = new HashMap<>();
+  private final Map<String, Consumer<HttpServletResponse>> ajaxActions = new HashMap<>();
 
   private ClassLoader classLoader;
 
@@ -162,6 +162,14 @@ public class IndexServlet implements Servlet {
           + "<div id=\"after_append\"></div></div>");
 
       prb.append("#after_append", "after_append");
+    }
+  }
+
+  private void doAppendTableRow(final HttpServletResponse resp) {
+    try (PartialResponseBuilder prb = new PartialResponseBuilder(resp)) {
+      prb.append("#test_table_body",
+          "<tr><td>First new row</td><td></td></tr>"
+              + "<tr id=\"appended_table_row\"><td></td><td>Second new row!</td></tr>");
     }
   }
 
@@ -324,6 +332,7 @@ public class IndexServlet implements Servlet {
     ajaxActions.put("append_2", this::doAppend2);
     ajaxActions.put("prepend_2", this::doPrepend2);
     ajaxActions.put("complex", this::doComplex);
+    ajaxActions.put("append_table_row", this::doAppendTableRow);
   }
 
   /**

@@ -25,10 +25,14 @@ import java.util.function.Consumer;
 
 import javax.servlet.ServletResponse;
 
+import org.everit.web.partialresponse.internal.HTMLEscapeWriterWrapper;
+
 /**
  * Builder class to create partial response.
  */
 public class PartialResponseBuilder implements Closeable {
+
+  private PrintWriter escapedWriter;
 
   private final PrintWriter writer;
 
@@ -46,6 +50,7 @@ public class PartialResponseBuilder implements Closeable {
     response.setContentType("text/html");
     try {
       writer = response.getWriter();
+      this.escapedWriter = new PrintWriter(new HTMLEscapeWriterWrapper(response.getWriter()));
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -58,7 +63,7 @@ public class PartialResponseBuilder implements Closeable {
    * @param selector
    *          The CSS selector of the parent element in which the new content will be appended.
    * @param contentProvider
-   *          The implementation of the functional interface shoud write the content that should be
+   *          The implementation of the functional interface should write the content that should be
    *          appended to the writer.
    * @return The builder.
    */
@@ -66,9 +71,9 @@ public class PartialResponseBuilder implements Closeable {
       final Consumer<PrintWriter> contentProvider) {
     writer.write("<partial-append ");
     writer.write("selector='");
-    writer.write(selector);
+    escapedWriter.write(selector);
     writer.write("'>");
-    contentProvider.accept(writer);
+    contentProvider.accept(escapedWriter);
     writer.write("</partial-append>");
     return this;
   }
@@ -106,9 +111,9 @@ public class PartialResponseBuilder implements Closeable {
       final Consumer<PrintWriter> contentProvider) {
     writer.write("<partial-prepend ");
     writer.write("selector='");
-    writer.write(selector);
+    escapedWriter.write(selector);
     writer.write("'>");
-    contentProvider.accept(writer);
+    contentProvider.accept(escapedWriter);
     writer.write("</partial-prepend>");
     return this;
   }
@@ -140,9 +145,9 @@ public class PartialResponseBuilder implements Closeable {
       final Consumer<PrintWriter> contentProvider) {
     writer.write("<partial-replace ");
     writer.write("selector='");
-    writer.write(selector);
+    escapedWriter.write(selector);
     writer.write("'>");
-    contentProvider.accept(writer);
+    contentProvider.accept(escapedWriter);
     writer.write("</partial-replace>");
     return this;
   }
@@ -171,7 +176,7 @@ public class PartialResponseBuilder implements Closeable {
    */
   public PartialResponseBuilder replaceById(final Consumer<PrintWriter> contentProvider) {
     writer.write("<partial-replace>");
-    contentProvider.accept(writer);
+    contentProvider.accept(escapedWriter);
     writer.write("</partial-replace>");
     return this;
   }

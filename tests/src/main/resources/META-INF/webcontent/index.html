@@ -22,7 +22,7 @@
 <title>Partial response</title>
 <meta name="author" content="" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<script data-eht-attr-src="resources['org/everit/web/partialresponse:partialresponse.js']"></script>
+<script data-eht-attr-src="resources['org/everit/web/partialresponse:partialresponse.min.js']"></script>
 <script data-eht-attr-src="resources['jquery:jquery.js']"></script>
 <style type="text/css">
 div.border {
@@ -73,6 +73,10 @@ div.border {
     </div>
     <p id="sample_msg" data-eht-text="sample_msg">sample_msg</p>
     <div id="new_content" data-eht-text="new_content">new_content</div>
+    <table>
+      <tbody id="test_table_body"></tbody>
+    </table>
+    <div id="appended_by_script_container"></div>
   </div>
 
   <div id=test_buttons>
@@ -83,7 +87,7 @@ div.border {
           <th>Remark</th>
         </tr>
       </thead>
-      <tbody id="test_table_body">
+      <tbody>
         <tr>
           <td><a id="resetToDefault" href="javascript:void(0);" onclick="resetToDefault();">Reset
               to default</a></td>
@@ -176,6 +180,10 @@ Partial response test with use partial-append, partial-prepend, partial-replace 
         <tr>
           <td><a id="append_table_row" href="javascript:void(0);" onclick="appendTableRow()">Append table row</a></td>
           <td>Testing inserting a new row. New row with Hello world should appear after last row.</td>
+        </tr>
+        <tr>
+          <td><a id="append_by_script" href="javascript:void(0);" onclick="appendByScript()">Append with javascript</a></td>
+          <td>Appends new content by passing Javascript code snippet from the server using PartialResponseBuilder.eval(javascript) function.</td>
         </tr>
       </tbody>
     </table>
@@ -334,6 +342,20 @@ Partial response test with use partial-append, partial-prepend, partial-replace 
         });
         return true;
       }
+
+      function appendByScript() {
+          $.ajax({
+            data : {
+              action : "append_by_script"
+            },
+            headers : {
+              "x-partialresponse-ajax" : "true"
+            }
+          }).done(function(msg) {
+            everit.partialresponse.process(msg);
+          });
+          return true;
+        }
     </script>
 </body>
 

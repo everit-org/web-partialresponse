@@ -88,8 +88,8 @@ public class IndexServlet implements Servlet {
    */
   @Activate
   public void activate(final BundleContext bundleContext) {
-    classLoader = bundleContext.getBundle().adapt(BundleWiring.class).getClassLoader();
-    pageTemplate = compileTemplate("META-INF/webcontent/" + getPageId() + ".html");
+    this.classLoader = bundleContext.getBundle().adapt(BundleWiring.class).getClassLoader();
+    this.pageTemplate = compileTemplate("META-INF/webcontent/" + getPageId() + ".html");
     putAjaxActions();
   }
 
@@ -120,7 +120,7 @@ public class IndexServlet implements Servlet {
 
     HTMLTemplateCompiler htmlTemplateCompiler = new HTMLTemplateCompiler(mvelExpressionCompiler,
         inlineCompilers);
-    ParserConfiguration parserConfiguration = new ParserConfiguration(classLoader);
+    ParserConfiguration parserConfiguration = new ParserConfiguration(this.classLoader);
 
     String template = readResourceContent(templateName);
 
@@ -142,7 +142,7 @@ public class IndexServlet implements Servlet {
     if (action == null) {
       return;
     }
-    Consumer<HttpServletResponse> actionConsumer = ajaxActions.get(action);
+    Consumer<HttpServletResponse> actionConsumer = this.ajaxActions.get(action);
     if (actionConsumer != null) {
       actionConsumer.accept(resp);
     }
@@ -165,6 +165,15 @@ public class IndexServlet implements Servlet {
     }
   }
 
+  private void doAppendByScript(final HttpServletResponse resp) {
+    try (PartialResponseBuilder prb = new PartialResponseBuilder(resp)) {
+      prb.eval(
+          "var container = $('#appended_by_script_container');"
+              + "container.append('"
+              + "<div id=\"appended_by_script\">I am appended by script</div>');");
+    }
+  }
+
   private void doAppendTableRow(final HttpServletResponse resp) {
     try (PartialResponseBuilder prb = new PartialResponseBuilder(resp)) {
       prb.append("#test_table_body",
@@ -178,14 +187,14 @@ public class IndexServlet implements Servlet {
       Map<String, Object> vars = new HashMap<>();
       appendVars("replace_by_id", vars);
 
-      prb.replaceById(writer -> pageTemplate.render(writer, vars, "main_div"));
+      prb.replaceById(writer -> this.pageTemplate.render(writer, vars, "main_div"));
 
       prb.append("#new_content", "_append");
 
       prb.prepend("#new_content", "prepend_");
 
       appendVars(UPDATE_STRING + "_SUB_DIV_1", vars);
-      prb.replace("#sub_div_1", writer -> pageTemplate.render(writer, vars, "sub_div_1"));
+      prb.replace("#sub_div_1", writer -> this.pageTemplate.render(writer, vars, "sub_div_1"));
     }
   }
 
@@ -210,7 +219,7 @@ public class IndexServlet implements Servlet {
     try (PartialResponseBuilder prb = new PartialResponseBuilder(resp)) {
       Map<String, Object> vars = new HashMap<>();
       appendVars("replace", vars);
-      prb.replace("#div_table_2", writer -> pageTemplate.render(writer, vars, "div_table_2"));
+      prb.replace("#div_table_2", writer -> this.pageTemplate.render(writer, vars, "div_table_2"));
     }
   }
 
@@ -222,20 +231,20 @@ public class IndexServlet implements Servlet {
       Map<String, Object> vars = new HashMap<>();
       appendVars("replace", vars);
 
-      prb.replace("#main_div", writer -> pageTemplate.render(writer, vars, "main_div"));
+      prb.replace("#main_div", writer -> this.pageTemplate.render(writer, vars, "main_div"));
 
       appendVars(UPDATE_STRING + "_DIV_TABLE_2", vars);
-      prb.replace("#div_table_2", writer -> pageTemplate.render(writer, vars, "div_table_2"));
+      prb.replace("#div_table_2", writer -> this.pageTemplate.render(writer, vars, "div_table_2"));
 
       appendVars(UPDATE_STRING + "_DIV_TABLE_1", vars);
-      prb.replace("#div_table_1", writer -> pageTemplate.render(writer, vars, "div_table_1"));
+      prb.replace("#div_table_1", writer -> this.pageTemplate.render(writer, vars, "div_table_1"));
 
       appendVars(UPDATE_STRING + "_SUB_DIV_0", vars);
-      prb.replace("#sub_div_0", writer -> pageTemplate.render(writer, vars, "sub_div_0"));
+      prb.replace("#sub_div_0", writer -> this.pageTemplate.render(writer, vars, "sub_div_0"));
 
       appendVars(UPDATE_STRING + "_SUB_DIV_1", vars);
       prb.replace("div:nth-child(3)",
-          writer -> pageTemplate.render(writer, vars, "sub_div_1"));
+          writer -> this.pageTemplate.render(writer, vars, "sub_div_1"));
 
     }
   }
@@ -244,7 +253,7 @@ public class IndexServlet implements Servlet {
     try (PartialResponseBuilder prb = new PartialResponseBuilder(resp)) {
       Map<String, Object> vars = new HashMap<>();
       appendVars("replace_by_id", vars);
-      prb.replaceById(writer -> pageTemplate.render(writer, vars, "div_table_2"));
+      prb.replaceById(writer -> this.pageTemplate.render(writer, vars, "div_table_2"));
     }
   }
 
@@ -256,19 +265,19 @@ public class IndexServlet implements Servlet {
       Map<String, Object> vars = new HashMap<>();
       appendVars("replace_by_id", vars);
 
-      prb.replaceById(writer -> pageTemplate.render(writer, vars, "main_div"));
+      prb.replaceById(writer -> this.pageTemplate.render(writer, vars, "main_div"));
 
       appendVars(UPDATE_STRING + "_DIV_TABLE_2", vars);
-      prb.replaceById(writer -> pageTemplate.render(writer, vars, "div_table_2"));
+      prb.replaceById(writer -> this.pageTemplate.render(writer, vars, "div_table_2"));
 
       appendVars(UPDATE_STRING + "_DIV_TABLE_1", vars);
-      prb.replaceById(writer -> pageTemplate.render(writer, vars, "div_table_1"));
+      prb.replaceById(writer -> this.pageTemplate.render(writer, vars, "div_table_1"));
 
       appendVars(UPDATE_STRING + "_SUB_DIV_0", vars);
-      prb.replaceById(writer -> pageTemplate.render(writer, vars, "sub_div_0"));
+      prb.replaceById(writer -> this.pageTemplate.render(writer, vars, "sub_div_0"));
 
       appendVars(UPDATE_STRING + "_SUB_DIV_1", vars);
-      prb.replaceById(writer -> pageTemplate.render(writer, vars, "sub_div_1"));
+      prb.replaceById(writer -> this.pageTemplate.render(writer, vars, "sub_div_1"));
 
     }
   }
@@ -277,7 +286,7 @@ public class IndexServlet implements Servlet {
     try (PartialResponseBuilder prb = new PartialResponseBuilder(resp)) {
       Map<String, Object> vars = new HashMap<>();
       appendVars(DEFAULT_STRING, vars);
-      prb.replaceById(writer -> pageTemplate.render(writer, vars, "full_content"));
+      prb.replaceById(writer -> this.pageTemplate.render(writer, vars, "full_content"));
     }
   }
 
@@ -294,7 +303,7 @@ public class IndexServlet implements Servlet {
     vars.put("resources", new WebResourceURIMap(request.getServletContext()));
     appendVars(DEFAULT_STRING, vars);
 
-    pageTemplate.render(response.getWriter(), vars, null);
+    this.pageTemplate.render(response.getWriter(), vars, null);
   }
 
   private String getPageId() {
@@ -303,7 +312,7 @@ public class IndexServlet implements Servlet {
 
   @Override
   public ServletConfig getServletConfig() {
-    return config;
+    return this.config;
   }
 
   @Override
@@ -313,7 +322,7 @@ public class IndexServlet implements Servlet {
 
   @Override
   public void init(final ServletConfig pConfig) throws ServletException {
-    config = pConfig;
+    this.config = pConfig;
   }
 
   private boolean isAjaxRequest(final HttpServletRequest request) {
@@ -322,17 +331,18 @@ public class IndexServlet implements Servlet {
   }
 
   private void putAjaxActions() {
-    ajaxActions.put("reset_to_default", this::doResetToDefault);
-    ajaxActions.put("replace_by_id_1", this::doReplaceById1);
-    ajaxActions.put("replace_1", this::doReplace1);
-    ajaxActions.put("append_1", this::doAppend1);
-    ajaxActions.put("prepend_1", this::doPrepend1);
-    ajaxActions.put("replace_by_id_2", this::doReplaceById2);
-    ajaxActions.put("replace_2", this::doReplace2);
-    ajaxActions.put("append_2", this::doAppend2);
-    ajaxActions.put("prepend_2", this::doPrepend2);
-    ajaxActions.put("complex", this::doComplex);
-    ajaxActions.put("append_table_row", this::doAppendTableRow);
+    this.ajaxActions.put("reset_to_default", this::doResetToDefault);
+    this.ajaxActions.put("replace_by_id_1", this::doReplaceById1);
+    this.ajaxActions.put("replace_1", this::doReplace1);
+    this.ajaxActions.put("append_1", this::doAppend1);
+    this.ajaxActions.put("prepend_1", this::doPrepend1);
+    this.ajaxActions.put("replace_by_id_2", this::doReplaceById2);
+    this.ajaxActions.put("replace_2", this::doReplace2);
+    this.ajaxActions.put("append_2", this::doAppend2);
+    this.ajaxActions.put("prepend_2", this::doPrepend2);
+    this.ajaxActions.put("complex", this::doComplex);
+    this.ajaxActions.put("append_table_row", this::doAppendTableRow);
+    this.ajaxActions.put("append_by_script", this::doAppendByScript);
   }
 
   /**
@@ -345,7 +355,7 @@ public class IndexServlet implements Servlet {
    * @return The content of the file.
    */
   private String readResourceContent(final String resource) {
-    URL resourceURL = classLoader.getResource(resource);
+    URL resourceURL = this.classLoader.getResource(resource);
 
     if (resourceURL == null) {
       return null;

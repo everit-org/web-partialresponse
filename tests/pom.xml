@@ -46,7 +46,7 @@
           <instructions>
             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
             <Export-Package />
-            <EOSGi-TestNum>10</EOSGi-TestNum>
+            <EOSGi-TestNum>11</EOSGi-TestNum>
           </instructions>
         </configuration>
       </plugin>

@@ -58,6 +58,8 @@ if (typeof everit.partialresponse === 'undefined'
 				var prependObj = $(this);
 				var selector = prependObj.attr('selector');
 				$(selector).prepend($.parseHTML(this.innerText));
+			} else if (elementName == 'PARTIAL-EVAL') {
+				eval(this.innerText);
 			} else {
 				console.log('Unknown partial-response element: ' + elementName);
 			}

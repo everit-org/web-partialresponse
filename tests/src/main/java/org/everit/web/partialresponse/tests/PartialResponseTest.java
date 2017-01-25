@@ -24,7 +24,6 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.NetworkConnector;
 import org.eclipse.jetty.server.Server;
 import org.everit.jetty.server.ecm.JettyServerConstants;
-import org.everit.osgi.dev.testrunner.TestDuringDevelopment;
 import org.everit.osgi.ecm.annotation.Component;
 import org.everit.osgi.ecm.annotation.Service;
 import org.everit.osgi.ecm.annotation.ServiceRef;
@@ -55,7 +54,6 @@ import aQute.bnd.annotation.headers.ProvideCapability;
     @StringAttribute(attributeId = "eosgi.testId", defaultValue = "PartialResponseTest"),
     @StringAttribute(attributeId = "eosgi.testEngine", defaultValue = "junit4") })
 @Service
-@TestDuringDevelopment
 public class PartialResponseTest {
 
   /**
@@ -176,7 +174,8 @@ public class PartialResponseTest {
       final String linkElemendId) throws IOException {
     try (WebClient webClient = new WebClient(browserVersion)) {
       setClientOptions(webClient);
-      WebWindow webWindow = openWindow(webClient, "https://localhost:" + jettyPort, WINDOW_NAME);
+      WebWindow webWindow =
+          openWindow(webClient, "https://localhost:" + this.jettyPort, WINDOW_NAME);
       Page page = webWindow.getEnclosedPage();
 
       HtmlPage htmlPage = cast(page);
@@ -222,7 +221,7 @@ public class PartialResponseTest {
   public void setServer(final Server server) {
     Connector[] connectors = server.getConnectors();
     NetworkConnector connector = (NetworkConnector) connectors[0];
-    jettyPort = connector.getLocalPort();
+    this.jettyPort = connector.getLocalPort();
   }
 
   @Test
@@ -264,6 +263,14 @@ public class PartialResponseTest {
           .subDiv2Msg("replace_by_id_sub_div_2_msg")
           .divTable2CellMsg("replace_by_id_div_table_2_cell_msg");
       assertPageTexts(htmlPage, expectedTextMsgDTO);
+    });
+  }
+
+  @Test
+  public void testEval() throws IOException {
+    doTest("append_by_script", (htmlPage) -> {
+      DomElement appendedTableRow = htmlPage.getElementById("appended_by_script");
+      Assert.assertNotNull(appendedTableRow);
     });
   }
 

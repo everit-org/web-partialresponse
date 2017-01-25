@@ -49,12 +49,12 @@ public class PartialResponseBuilder implements Closeable {
     response.setCharacterEncoding(StandardCharsets.UTF_8.name());
     response.setContentType("text/html");
     try {
-      writer = response.getWriter();
+      this.writer = response.getWriter();
       this.escapedWriter = new PrintWriter(new HTMLEscapeWriterWrapper(response.getWriter()));
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
-    writer.write("<partial-response>");
+    this.writer.write("<partial-response>");
   }
 
   /**
@@ -69,12 +69,12 @@ public class PartialResponseBuilder implements Closeable {
    */
   public PartialResponseBuilder append(final String selector,
       final Consumer<PrintWriter> contentProvider) {
-    writer.write("<partial-append ");
-    writer.write("selector='");
-    escapedWriter.write(selector);
-    writer.write("'>");
-    contentProvider.accept(escapedWriter);
-    writer.write("</partial-append>");
+    this.writer.write("<partial-append ");
+    this.writer.write("selector='");
+    this.escapedWriter.write(selector);
+    this.writer.write("'>");
+    contentProvider.accept(this.escapedWriter);
+    this.writer.write("</partial-append>");
     return this;
   }
 
@@ -94,7 +94,34 @@ public class PartialResponseBuilder implements Closeable {
 
   @Override
   public void close() {
-    writer.write("</partial-response>");
+    this.writer.write("</partial-response>");
+  }
+
+  /**
+   * Adds a javascript code snippet to the partial response that will be executed on the client.
+   *
+   * @param javascriptProvider
+   *          The implementation of the functional interface should write the javascript code
+   *          snippet onto the provided writer.
+   * @return The builder.
+   */
+  public PartialResponseBuilder eval(final Consumer<PrintWriter> javascriptProvider) {
+    this.writer.write("<partial-eval>");
+    javascriptProvider.accept(this.escapedWriter);
+    this.writer.write("</partial-eval>");
+    return this;
+  }
+
+  /**
+   * Adds a Javascript code snippet to the partial response that will be executed on the client.
+   *
+   * @param javascript
+   *          The Javascript code snippet that will be evaluated on the client.
+   * @return The builder.
+   */
+  public PartialResponseBuilder eval(final String javascript) {
+    eval((pwriter) -> pwriter.write(javascript));
+    return this;
   }
 
   /**
@@ -109,12 +136,12 @@ public class PartialResponseBuilder implements Closeable {
    */
   public PartialResponseBuilder prepend(final String selector,
       final Consumer<PrintWriter> contentProvider) {
-    writer.write("<partial-prepend ");
-    writer.write("selector='");
-    escapedWriter.write(selector);
-    writer.write("'>");
-    contentProvider.accept(escapedWriter);
-    writer.write("</partial-prepend>");
+    this.writer.write("<partial-prepend ");
+    this.writer.write("selector='");
+    this.escapedWriter.write(selector);
+    this.writer.write("'>");
+    contentProvider.accept(this.escapedWriter);
+    this.writer.write("</partial-prepend>");
     return this;
   }
 
@@ -143,12 +170,12 @@ public class PartialResponseBuilder implements Closeable {
    */
   public PartialResponseBuilder replace(final String selector,
       final Consumer<PrintWriter> contentProvider) {
-    writer.write("<partial-replace ");
-    writer.write("selector='");
-    escapedWriter.write(selector);
-    writer.write("'>");
-    contentProvider.accept(escapedWriter);
-    writer.write("</partial-replace>");
+    this.writer.write("<partial-replace ");
+    this.writer.write("selector='");
+    this.escapedWriter.write(selector);
+    this.writer.write("'>");
+    contentProvider.accept(this.escapedWriter);
+    this.writer.write("</partial-replace>");
     return this;
   }
 
@@ -175,9 +202,9 @@ public class PartialResponseBuilder implements Closeable {
    * @return the builder.
    */
   public PartialResponseBuilder replaceById(final Consumer<PrintWriter> contentProvider) {
-    writer.write("<partial-replace>");
-    contentProvider.accept(escapedWriter);
-    writer.write("</partial-replace>");
+    this.writer.write("<partial-replace>");
+    contentProvider.accept(this.escapedWriter);
+    this.writer.write("</partial-replace>");
     return this;
   }
 

@@ -89,13 +89,13 @@
               *
             </Import-Package>
             <Export-Package>
-              org.everit.web.partialresponse;version=1.0.1
+              org.everit.web.partialresponse;version=1.1.0
             </Export-Package>
             <Require-Capability>
               everit.webresource;filter:="(name=jquery)"
             </Require-Capability>
             <Provide-Capability>
-              everit.webresource;name=org.everit.web.partialresponse;resourceFolder=/META-INF/resources/org.everit.web.resources/partialresponse/1.0.0;libraryPrefix=org/everit/web/partialresponse;version:Version=1.0.1
+              everit.webresource;name=org.everit.web.partialresponse;resourceFolder=/META-INF/resources/org.everit.web.resources/partialresponse/1.0.0;libraryPrefix=org/everit/web/partialresponse;version:Version=1.1.0
             </Provide-Capability>
           </instructions>
         </configuration>

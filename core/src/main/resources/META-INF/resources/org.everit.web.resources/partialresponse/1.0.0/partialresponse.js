@@ -15,40 +15,52 @@
  */
 
 if (typeof everit === 'undefined' || everit === null) {
-  everit = {};
+	everit = {};
 }
 
-if (typeof everit.partialresponse === 'undefined' || everit.partialresponse === null) {
-  everit.partialresponse = {"version" : "1.0.0"};
+if (typeof everit.partialresponse === 'undefined'
+		|| everit.partialresponse === null) {
+	everit.partialresponse = {
+		"version" : "1.1.0"
+	};
 
-  everit.partialresponse.process = function(responseContent) {
-    var responseObj = $($.parseHTML(responseContent));
+	everit.partialresponse.process = function(responseContent) {
+		var responseObj = $($.parseHTML(responseContent));
 
-    responseObj.children('partial-replace').each(function() {
-      var replaceObj = $(this);
-      var selector = replaceObj.attr('selector');
-      if (typeof selector !== typeof undefined && selector !== false) {
-        $(selector).replaceWith($.parseHTML(this.innerText));
-      } else {
-        $($.parseHTML(this.innerText)).each(function() {
-          var newContentObj = $(this);
-          var elementId = newContentObj.attr('id');
-          var newContentOuterHTML = this.outerHTML;
-          $('#' + elementId).replaceWith(newContentOuterHTML);
-        });
-      }
-    });
+		if (responseObj.length < 1) {
+			return;
+		}
 
-    responseObj.children('partial-append').each(function() {
-      var appendObj = $(this);
-      var selector = appendObj.attr('selector');
-      $(selector).append($.parseHTML(this.innerText));
-    });
-  
-    responseObj.children('partial-prepend').each(function() {
-      var prependObj = $(this);
-      var selector = prependObj.attr('selector');
-      $(selector).prepend($.parseHTML(this.innerText));
-    });
-  }
+		if (responseObj.length > 1 || responseObj[0].nodeName.toUpperCase() != 'PARTIAL-RESPONSE') {
+			throw ("A partial response may have one partial-response root element: " + responseContent);
+		}
+		
+		responseObj.children().each(function() {
+			var elementName = this.nodeName.toUpperCase();
+			if (elementName == 'PARTIAL-REPLACE') {
+				var replaceObj = $(this);
+				var selector = replaceObj.attr('selector');
+				if (typeof selector !== typeof undefined && selector !== false) {
+					$(selector).replaceWith($.parseHTML(this.innerText));
+				} else {
+					$($.parseHTML(this.innerText)).each(function() {
+						var newContentObj = $(this);
+						var elementId = newContentObj.attr('id');
+						var newContentOuterHTML = this.outerHTML;
+						$('#' + elementId).replaceWith(newContentOuterHTML);
+					});
+				}
+			} else if (elementName == 'PARTIAL-APPEND') {
+				var appendObj = $(this);
+				var selector = appendObj.attr('selector');
+				$(selector).append($.parseHTML(this.innerText));
+			} else if (elementName == 'PARTIAL-PREPEND') {
+				var prependObj = $(this);
+				var selector = prependObj.attr('selector');
+				$(selector).prepend($.parseHTML(this.innerText));
+			} else {
+				console.log('Unknown partial-response element: ' + elementName);
+			}
+		});
+	}
 }

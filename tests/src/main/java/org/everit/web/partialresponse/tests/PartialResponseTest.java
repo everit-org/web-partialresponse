@@ -246,7 +246,6 @@ public class PartialResponseTest {
   }
 
   @Test
-  @TestDuringDevelopment
   public void testAppendTableRow() throws IOException {
     doTest("append_table_row", (htmlPage) -> {
       DomElement appendedTableRow = htmlPage.getElementById("appended_table_row");
@@ -312,7 +311,6 @@ public class PartialResponseTest {
   }
 
   @Test
-  @TestDuringDevelopment
   public void testReplaceById1() throws IOException {
     doTest("replace_by_id_1", (htmlPage) -> {
       ExpectedTextMsgDTO expectedTextMsgDTO = createDefaultExpectedTextMsgDTO()
